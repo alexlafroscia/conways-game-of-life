@@ -10,11 +10,11 @@ gulp.task('compile-dependencies', function() {
 });
 
 gulp.task('compile-app-js', function () {
-  var reactTempFilter = gulpFilter('**/*.jax');
+  var reactTempFilter = gulpFilter('**/*.jsx');
   var jsFilter        = gulpFilter('**/*.js');
 
   return gulp.src([
-      'src/template.jax',
+      'src/template.jsx',
       'src/app.js'
     ])
     .pipe(reactTempFilter)
