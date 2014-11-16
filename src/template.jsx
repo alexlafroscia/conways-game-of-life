@@ -1,22 +1,16 @@
 var Cell = React.createClass({
   getInitialState: function() {
-    return { living: false };
-  },
-
-  birth: function() {
-    this.setState({ living: true });
-  },
-
-  kill: function() {
-    this.setState({ living: false });
+    return { living: this.props.living };
   },
 
   toggleLiving: function() {
+    this.props.living = !this.props.living;
     this.setState({ living: !this.state.living });
   },
 
   render: function() {
     var classValue = '';
+    this.state.living = this.props.living;
     if (this.state.living) {
       classValue += 'active';
     }
@@ -29,7 +23,7 @@ var Cell = React.createClass({
 var Row = React.createClass({
   render: function() {
     var cells = this.props.cells.map(function(cell) {
-      return <Cell></Cell>;
+      return <Cell living={cell.living}></Cell>;
     }.bind(this));
 
     return (
@@ -49,18 +43,20 @@ var GameBoard = React.createClass({
     for(i = 0; i < 8; i++) {
       var cells = [];
       for (j = 0; j < 20; j++) {
-        cells[j] = new Cell();
+        cells[j] = { living: true };
       }
       rows[i] = cells;
     }
-    console.debug(rows);
     return { rows: rows};
   },
 
   tick: function() {
-    // var newCells = this.state.cells;
-    // newCells.push( new Cell() );
-    // this.setState({ cells: newCells });
+    var newRows = this.state.rows;
+    var randomRow = Math.floor(Math.random() * 8);
+    var randomColumn = Math.floor(Math.random() * 20);
+    var cell = newRows[randomRow][randomColumn];
+    cell.living = !cell.living;
+    this.setState({ rows: newRows });
   },
 
   componentDidMount: function() {
