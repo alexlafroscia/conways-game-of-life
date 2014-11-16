@@ -1,16 +1,32 @@
+var Cell = React.createClass({displayName: 'Cell',
+  getInitialState: function() {
+    return { living: false };
+  },
+
+  render: function() {
+    var classValue = '';
+    if (this.state.living) {
+      classValue += 'active';
+    }
+    return React.createElement("li", {className: classValue});
+  }
+
+});
+
+
 var GameBoard = React.createClass({displayName: 'GameBoard',
   getInitialState: function() {
-    return { cells: [
-        { living: true  },
-        { living: false }
-      ]
-    };
+    var cells = [];
+    for(i = 0; i < 90; i++) {
+      cells[i] = new Cell();
+    }
+    return { cells: cells };
   },
 
   tick: function() {
-    var newCells = this.state.cells;
-    newCells.push({living: false});
-    this.setState({ cells: newCells });
+    // var newCells = this.state.cells;
+    // newCells.push( new Cell() );
+    // this.setState({ cells: newCells });
   },
 
   componentDidMount: function() {
@@ -22,17 +38,13 @@ var GameBoard = React.createClass({displayName: 'GameBoard',
   },
 
   render: function() {
-    var createCell = function(cell) {
-      var classValue = "";
-      if (cell.living) {
-        classValue += 'active';
-      }
-      return React.createElement("li", {className: classValue});
-    };
+    var cells = this.state.cells.map(function(cell) {
+      return React.createElement(Cell, null);
+    }.bind(this));
 
     return (
       React.createElement("ul", {className: "grid"}, 
-        this.state.cells.map(createCell)
+        cells 
       )
     );
   }
