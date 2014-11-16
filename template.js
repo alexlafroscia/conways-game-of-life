@@ -3,12 +3,24 @@ var Cell = React.createClass({displayName: 'Cell',
     return { living: false };
   },
 
+  birth: function() {
+    this.setState({ living: true });
+  },
+
+  kill: function() {
+    this.setState({ living: false });
+  },
+
+  toggleLiving: function() {
+    this.setState({ living: !this.state.living });
+  },
+
   render: function() {
     var classValue = '';
     if (this.state.living) {
       classValue += 'active';
     }
-    return React.createElement("li", {className: classValue});
+    return React.createElement("li", {className: classValue, onClick: this.toggleLiving});
   }
 
 });
