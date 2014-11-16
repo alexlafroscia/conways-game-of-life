@@ -6,7 +6,7 @@ gulp.task('compile-dependencies', function() {
   return gulp.src([
     'node_modules/react/dist/react.js'
   ])
-  .pipe(gulp.dest('dist'));
+  .pipe(gulp.dest('.'));
 });
 
 gulp.task('compile-app-js', function () {
@@ -20,7 +20,7 @@ gulp.task('compile-app-js', function () {
     .pipe(reactTempFilter)
     .pipe(react())
     .pipe(reactTempFilter.restore())
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('.'));
 });
 
 gulp.task('default', ['compile-dependencies', 'compile-app-js']);
