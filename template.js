@@ -3,9 +3,8 @@ var Cell = React.createClass({displayName: 'Cell',
     return { living: this.props.living };
   },
 
-  toggleLiving: function() {
-    this.props.living = !this.props.living;
-    this.setState({ living: !this.state.living });
+  clickHandler: function() {
+    this.props.onClick(this.props.id);
   },
 
   render: function() {
@@ -14,7 +13,7 @@ var Cell = React.createClass({displayName: 'Cell',
     if (this.state.living) {
       classValue += 'active';
     }
-    return React.createElement("li", {className: classValue, onClick: this.toggleLiving});
+    return React.createElement("li", {className: classValue, onClick: this.clickHandler});
   }
 
 });
@@ -23,7 +22,7 @@ var Cell = React.createClass({displayName: 'Cell',
 var Row = React.createClass({displayName: 'Row',
   render: function() {
     var cells = this.props.cells.map(function(cell) {
-      return React.createElement(Cell, {living: cell.living});
+      return React.createElement(Cell, {key: cell.id, id: cell.id, living: cell.living, onClick: this.props.cellClick});
     }.bind(this));
 
     return (
@@ -40,14 +39,34 @@ var Row = React.createClass({displayName: 'Row',
 var GameBoard = React.createClass({displayName: 'GameBoard',
   getInitialState: function() {
     var rows = [];
+    var id = 0;
     for(i = 0; i < 8; i++) {
       var cells = [];
       for (j = 0; j < 20; j++) {
-        cells[j] = { living: true };
+        cells[j] = { id: id++, living: false };
       }
       rows[i] = cells;
     }
     return { rows: rows};
+  },
+
+  toggleCell: function(id) {
+    var rows = this.state.rows;
+    var i, j;
+
+    rowLoop:
+      for (i = 0; i < rows.length; i++) {
+        var row = rows[i];
+    cellLoop:
+        for(j = 0; j < row.length; j++) {
+          if (row[j].id == id) {
+            break rowLoop;
+          }
+        }
+      }
+
+    rows[i][j].living = !rows[i][j].living;
+    this.setState({ rows: rows });
   },
 
   tick: function() {
@@ -68,8 +87,9 @@ var GameBoard = React.createClass({displayName: 'GameBoard',
   },
 
   render: function() {
+    var self = this;
     var rows = this.state.rows.map(function(row) {
-      return React.createElement(Row, {cells: row});
+      return React.createElement(Row, {cells: row, cellClick: self.toggleCell});
     }.bind(this));
 
     return (

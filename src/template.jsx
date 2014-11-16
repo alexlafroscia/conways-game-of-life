@@ -3,9 +3,8 @@ var Cell = React.createClass({
     return { living: this.props.living };
   },
 
-  toggleLiving: function() {
-    this.props.living = !this.props.living;
-    this.setState({ living: !this.state.living });
+  clickHandler: function() {
+    this.props.onClick(this.props.id);
   },
 
   render: function() {
@@ -14,7 +13,7 @@ var Cell = React.createClass({
     if (this.state.living) {
       classValue += 'active';
     }
-    return <li className={classValue} onClick={this.toggleLiving} ></li>;
+    return <li className={classValue} onClick={this.clickHandler} ></li>;
   }
 
 });
@@ -23,7 +22,7 @@ var Cell = React.createClass({
 var Row = React.createClass({
   render: function() {
     var cells = this.props.cells.map(function(cell) {
-      return <Cell living={cell.living}></Cell>;
+      return <Cell key= {cell.id} id={cell.id} living={cell.living} onClick={this.props.cellClick}></Cell>;
     }.bind(this));
 
     return (
@@ -40,14 +39,34 @@ var Row = React.createClass({
 var GameBoard = React.createClass({
   getInitialState: function() {
     var rows = [];
+    var id = 0;
     for(i = 0; i < 8; i++) {
       var cells = [];
       for (j = 0; j < 20; j++) {
-        cells[j] = { living: true };
+        cells[j] = { id: id++, living: false };
       }
       rows[i] = cells;
     }
     return { rows: rows};
+  },
+
+  toggleCell: function(id) {
+    var rows = this.state.rows;
+    var i, j;
+
+    rowLoop:
+      for (i = 0; i < rows.length; i++) {
+        var row = rows[i];
+    cellLoop:
+        for(j = 0; j < row.length; j++) {
+          if (row[j].id == id) {
+            break rowLoop;
+          }
+        }
+      }
+
+    rows[i][j].living = !rows[i][j].living;
+    this.setState({ rows: rows });
   },
 
   tick: function() {
@@ -68,8 +87,9 @@ var GameBoard = React.createClass({
   },
 
   render: function() {
+    var self = this;
     var rows = this.state.rows.map(function(row) {
-      return <Row cells={row} ></Row>;
+      return <Row cells={row} cellClick={self.toggleCell} ></Row>;
     }.bind(this));
 
     return (
