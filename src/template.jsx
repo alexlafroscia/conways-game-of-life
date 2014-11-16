@@ -14,13 +14,35 @@ var Cell = React.createClass({
 });
 
 
+var Row = React.createClass({
+  render: function() {
+    var cells = this.props.cells.map(function(cell) {
+      return <Cell></Cell>;
+    }.bind(this));
+
+    return (
+      <li>
+        <ul className="row">
+          {cells}
+        </ul>
+      </li>
+    );
+  }
+});
+
+
 var GameBoard = React.createClass({
   getInitialState: function() {
-    var cells = [];
-    for(i = 0; i < 90; i++) {
-      cells[i] = new Cell();
+    var rows = [];
+    for(i = 0; i < 8; i++) {
+      var cells = [];
+      for (j = 0; j < 20; j++) {
+        cells[j] = new Cell();
+      }
+      rows[i] = cells;
     }
-    return { cells: cells };
+    console.debug(rows);
+    return { rows: rows};
   },
 
   tick: function() {
@@ -38,13 +60,13 @@ var GameBoard = React.createClass({
   },
 
   render: function() {
-    var cells = this.state.cells.map(function(cell) {
-      return <Cell></Cell>;
+    var rows = this.state.rows.map(function(row) {
+      return <Row cells={row} ></Row>;
     }.bind(this));
 
     return (
       <ul className="grid">
-        {cells }
+        {rows}
       </ul>
     );
   }

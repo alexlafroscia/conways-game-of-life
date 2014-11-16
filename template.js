@@ -14,13 +14,35 @@ var Cell = React.createClass({displayName: 'Cell',
 });
 
 
+var Row = React.createClass({displayName: 'Row',
+  render: function() {
+    var cells = this.props.cells.map(function(cell) {
+      return React.createElement(Cell, null);
+    }.bind(this));
+
+    return (
+      React.createElement("li", null, 
+        React.createElement("ul", {className: "row"}, 
+          cells
+        )
+      )
+    );
+  }
+});
+
+
 var GameBoard = React.createClass({displayName: 'GameBoard',
   getInitialState: function() {
-    var cells = [];
-    for(i = 0; i < 90; i++) {
-      cells[i] = new Cell();
+    var rows = [];
+    for(i = 0; i < 8; i++) {
+      var cells = [];
+      for (j = 0; j < 20; j++) {
+        cells[j] = new Cell();
+      }
+      rows[i] = cells;
     }
-    return { cells: cells };
+    console.debug(rows);
+    return { rows: rows};
   },
 
   tick: function() {
@@ -38,13 +60,13 @@ var GameBoard = React.createClass({displayName: 'GameBoard',
   },
 
   render: function() {
-    var cells = this.state.cells.map(function(cell) {
-      return React.createElement(Cell, null);
+    var rows = this.state.rows.map(function(row) {
+      return React.createElement(Row, {cells: row});
     }.bind(this));
 
     return (
       React.createElement("ul", {className: "grid"}, 
-        cells 
+        rows
       )
     );
   }

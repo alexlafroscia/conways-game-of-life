@@ -3,16 +3,33 @@
 <head>
   <title>Conway's Game of Life</title>
   <style>
-    ul.grid li {
+    ul.grid {
+      padding: 0;
+    }
+
+    ul.grid > li {
       display: block;
+      height: 80px;
+      float: left;
+      clear: both;
+      overflow: hidden;
+      background-color: pink;
+    }
+
+    ul.row {
+      overflow: hidden;
+      padding: 0;
+    }
+
+    ul.row > li {
+      display: inline-block;
       height: 50px;
       width: 50px;
-      float: left;
       margin: 15px;
       background-color: red;
     }
 
-    ul.grid li.active {
+    ul.row > li.active {
       background-color: blue;
     }
   </style>
