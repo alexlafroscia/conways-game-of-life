@@ -51,7 +51,7 @@ var GameBoard = React.createClass({
       }
       rows[i] = cells;
     }
-    for(i = 0; i < 8; i++) {
+    for(i = 0; i < 20; i++) {
       var row = Math.floor(Math.random() * (this.props.numRows));
       var col = Math.floor(Math.random() * (this.props.numCols));
       rows[row][col].living = true;
@@ -98,16 +98,17 @@ var GameBoard = React.createClass({
   },
 
   tick: function() {
-    var cells = this.state.rows;
+    var cells = this.state.rows.slice(0);
     for(i = 0; i < this.props.numRows; i++) {
       for (j = 0; j < this.props.numCols; j++) {
         var numLivingNeighbors = this.getNumLivingNeighbors(i, j);
+        console.debug(numLivingNeighbors);
         if (numLivingNeighbors < 2) {
           cells[i][j].living = false;
         } else if (numLivingNeighbors == 3) {
-          cells[i][j] = true;
+          cells[i][j].living = true;
         } else if (numLivingNeighbors > 3) {
-          cells[i][j] = false;
+          cells[i][j].living = false;
         }
       }
     }
