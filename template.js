@@ -37,19 +37,23 @@ var Row = React.createClass({displayName: 'Row',
 
 
 var GameBoard = React.createClass({displayName: 'GameBoard',
+  getDefaultProps: function() {
+    return { numRows: 9, numCols: 20 };
+  },
+
   getInitialState: function() {
     var rows = [];
     var id = 0;
-    for(i = 0; i < 8; i++) {
+    for(i = 0; i < this.props.numRows; i++) {
       var cells = [];
-      for (j = 0; j < 20; j++) {
+      for (j = 0; j < this.props.numCols; j++) {
         cells[j] = { id: id++, living: false };
       }
       rows[i] = cells;
     }
     for(i = 0; i < 8; i++) {
-      var row = Math.floor(Math.random() * 7);
-      var col = Math.floor(Math.random() * 19);
+      var row = Math.floor(Math.random() * (this.props.numRows));
+      var col = Math.floor(Math.random() * (this.props.numCols));
       rows[row][col].living = true;
     }
     return { rows: rows};
@@ -78,22 +82,25 @@ var GameBoard = React.createClass({displayName: 'GameBoard',
 
   getNumLivingNeighbors: function(i, j) {
     var rows = this.state.rows;
+    var numRows = this.props.numRows;
+    var numCols = this.props.numCols;
     var count = 0;
-    if ((i - 1) >= 0 && (j - 1) >= 0  && rows[i - 1][j - 1].living) count++;
-    if ((i - 1) >= 0                  && rows[i - 1][j    ].living) count++;
-    if ((i - 1) >= 0 && (j + 1) <= 19 && rows[i - 1][j + 1].living) count++;
-    if (                (j - 1) >= 0  && rows[i    ][j - 1].living) count++;
-    if (                (j + 1) <= 19 && rows[i    ][j + 1].living) count++;
-    if ((i + 1) <= 7 && (j - 1) >= 0  && rows[i + 1][j - 1].living) count++;
-    if ((i + 1) <= 7                  && rows[i + 1][j    ].living) count++;
-    if ((i + 1) <= 7 && (j + 1) <= 19 && rows[i + 1][j + 1].living) count++;
+    //  Check row number is valid   Check col is valid          Check if that cell is alive
+    if ((i - 1) >= 0             && (j - 1) >= 0             && rows[i - 1][j - 1].living) count++;
+    if ((i - 1) >= 0                                         && rows[i - 1][j    ].living) count++;
+    if ((i - 1) >= 0             && (j + 1) <= (numCols - 1) && rows[i - 1][j + 1].living) count++;
+    if (                            (j - 1) >= 0             && rows[i    ][j - 1].living) count++;
+    if (                            (j + 1) <= (numCols - 1) && rows[i    ][j + 1].living) count++;
+    if ((i + 1) <= (numRows - 1) && (j - 1) >= 0             && rows[i + 1][j - 1].living) count++;
+    if ((i + 1) <= (numRows - 1)                             && rows[i + 1][j    ].living) count++;
+    if ((i + 1) <= (numRows - 1) && (j + 1) <= (numCols - 1) && rows[i + 1][j + 1].living) count++;
     return count;
   },
 
   tick: function() {
     var cells = this.state.rows;
-    for(i = 0; i < 8; i++) {
-      for (j = 0; j < 20; j++) {
+    for(i = 0; i < this.props.numRows; i++) {
+      for (j = 0; j < this.props.numCols; j++) {
         var numLivingNeighbors = this.getNumLivingNeighbors(i, j);
         if (numLivingNeighbors < 2) {
           cells[i][j].living = false;
