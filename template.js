@@ -13,7 +13,15 @@ var Cell = React.createClass({displayName: 'Cell',
     if (this.state.living) {
       classValue += 'active';
     }
-    return React.createElement("li", {className: classValue, onClick: this.clickHandler});
+    var styles = {
+      width: "" + this.props.cellSize + "px",
+      height: "" + this.props.cellSize + "px",
+      borderWidth: "" + (this.props.cellSize / 5.3) + "px"
+    };
+    return React.createElement("li", {style: styles, 
+               className: classValue, 
+               onClick: this.clickHandler}
+           );
   }
 
 });
@@ -22,7 +30,12 @@ var Cell = React.createClass({displayName: 'Cell',
 var Row = React.createClass({displayName: 'Row',
   render: function() {
     var cells = this.props.cells.map(function(cell) {
-      return React.createElement(Cell, {key: cell.id, id: cell.id, living: cell.living, onClick: this.props.cellClick});
+    return React.createElement(Cell, {key: cell.id, 
+                 id: cell.id, 
+                 living: cell.living, 
+                 onClick: this.props.cellClick, 
+                 cellSize: this.props.cellSize}
+           );
     }.bind(this));
 
     return (
@@ -38,7 +51,7 @@ var Row = React.createClass({displayName: 'Row',
 
 var GameBoard = React.createClass({displayName: 'GameBoard',
   getDefaultProps: function() {
-    return { numRows: 8, numCols: 20 };
+    return { numRows: 8, numCols: 20, cellSize: '60' };
   },
 
   getInitialState: function() {
@@ -116,7 +129,7 @@ var GameBoard = React.createClass({displayName: 'GameBoard',
   },
 
   componentDidMount: function() {
-    this.interval = setInterval(this.tick, 1000);
+    this.interval = setInterval(this.tick, 100);
   },
 
   componentWillUnmount: function() {
@@ -126,7 +139,7 @@ var GameBoard = React.createClass({displayName: 'GameBoard',
   render: function() {
     var self = this;
     var rows = this.state.rows.map(function(row) {
-      return React.createElement(Row, {cells: row, cellClick: self.toggleCell});
+      return React.createElement(Row, {cells: row, cellClick: self.toggleCell, cellSize: self.props.cellSize});
     }.bind(this));
 
     return (

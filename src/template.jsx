@@ -13,7 +13,15 @@ var Cell = React.createClass({
     if (this.state.living) {
       classValue += 'active';
     }
-    return <li className={classValue} onClick={this.clickHandler} ></li>;
+    var styles = {
+      width: "" + this.props.cellSize + "px",
+      height: "" + this.props.cellSize + "px",
+      borderWidth: "" + (this.props.cellSize / 5.3) + "px"
+    };
+    return <li style={styles}
+               className={classValue}
+               onClick={this.clickHandler} >
+           </li>;
   }
 
 });
@@ -22,7 +30,12 @@ var Cell = React.createClass({
 var Row = React.createClass({
   render: function() {
     var cells = this.props.cells.map(function(cell) {
-      return <Cell key= {cell.id} id={cell.id} living={cell.living} onClick={this.props.cellClick}></Cell>;
+    return <Cell key={cell.id}
+                 id={cell.id}
+                 living={cell.living}
+                 onClick={this.props.cellClick}
+                 cellSize={this.props.cellSize}>
+           </Cell>;
     }.bind(this));
 
     return (
@@ -38,7 +51,7 @@ var Row = React.createClass({
 
 var GameBoard = React.createClass({
   getDefaultProps: function() {
-    return { numRows: 8, numCols: 20 };
+    return { numRows: 8, numCols: 20, cellSize: '60' };
   },
 
   getInitialState: function() {
@@ -116,7 +129,7 @@ var GameBoard = React.createClass({
   },
 
   componentDidMount: function() {
-    this.interval = setInterval(this.tick, 1000);
+    this.interval = setInterval(this.tick, 100);
   },
 
   componentWillUnmount: function() {
@@ -126,7 +139,7 @@ var GameBoard = React.createClass({
   render: function() {
     var self = this;
     var rows = this.state.rows.map(function(row) {
-      return <Row cells={row} cellClick={self.toggleCell} ></Row>;
+      return <Row cells={row} cellClick={self.toggleCell} cellSize={self.props.cellSize} ></Row>;
     }.bind(this));
 
     return (
