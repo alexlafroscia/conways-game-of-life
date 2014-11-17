@@ -47,9 +47,16 @@ var GameBoard = React.createClass({displayName: 'GameBoard',
       }
       rows[i] = cells;
     }
+    for(i = 0; i < 8; i++) {
+      var row = Math.floor(Math.random() * 7);
+      var col = Math.floor(Math.random() * 19);
+      rows[row][col].living = true;
+    }
     return { rows: rows};
   },
 
+  // Toggle a cell's living state
+  // Takes a Cell ID and updates the state of the component
   toggleCell: function(id) {
     var rows = this.state.rows;
     var i, j;
@@ -69,13 +76,35 @@ var GameBoard = React.createClass({displayName: 'GameBoard',
     this.setState({ rows: rows });
   },
 
+  getNumLivingNeighbors: function(i, j) {
+    var rows = this.state.rows;
+    var count = 0;
+    if ((i - 1) >= 0 && (j - 1) >= 0  && rows[i - 1][j - 1].living) count++;
+    if ((i - 1) >= 0                  && rows[i - 1][j    ].living) count++;
+    if ((i - 1) >= 0 && (j + 1) <= 19 && rows[i - 1][j + 1].living) count++;
+    if (                (j - 1) >= 0  && rows[i    ][j - 1].living) count++;
+    if (                (j + 1) <= 19 && rows[i    ][j + 1].living) count++;
+    if ((i + 1) <= 7 && (j - 1) >= 0  && rows[i + 1][j - 1].living) count++;
+    if ((i + 1) <= 7                  && rows[i + 1][j    ].living) count++;
+    if ((i + 1) <= 7 && (j + 1) <= 19 && rows[i + 1][j + 1].living) count++;
+    return count;
+  },
+
   tick: function() {
-    var newRows = this.state.rows;
-    var randomRow = Math.floor(Math.random() * 8);
-    var randomColumn = Math.floor(Math.random() * 20);
-    var cell = newRows[randomRow][randomColumn];
-    cell.living = !cell.living;
-    this.setState({ rows: newRows });
+    var cells = this.state.rows;
+    for(i = 0; i < 8; i++) {
+      for (j = 0; j < 20; j++) {
+        var numLivingNeighbors = this.getNumLivingNeighbors(i, j);
+        if (numLivingNeighbors < 2) {
+          cells[i][j].living = false;
+        } else if (numLivingNeighbors == 3) {
+          cells[i][j] = true;
+        } else if (numLivingNeighbors > 3) {
+          cells[i][j] = false;
+        }
+      }
+    }
+    this.setState({ rows: cells });
   },
 
   componentDidMount: function() {
