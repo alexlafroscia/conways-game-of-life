@@ -51,7 +51,7 @@ var Row = React.createClass({
 
 var GameBoard = React.createClass({
   getDefaultProps: function() {
-    return { numRows: 8, numCols: 20, cellSize: '60' };
+    return { numRows: 8, numCols: 20, cellSize: '60', rows: [] };
   },
 
   getInitialState: function() {
@@ -75,7 +75,8 @@ var GameBoard = React.createClass({
   // Toggle a cell's living state
   // Takes a Cell ID and updates the state of the component
   toggleCell: function(id) {
-    var rows = this.state.rows;
+    clearInterval(this.interval);
+    var rows = this.props.rows;
     var i, j;
 
     rowLoop:
@@ -91,10 +92,11 @@ var GameBoard = React.createClass({
 
     rows[i][j].living = !rows[i][j].living;
     this.setState({ rows: rows });
+    this.interval = setInterval(this.tick, 100);
   },
 
   getNumLivingNeighbors: function(i, j) {
-    var rows = this.state.rows;
+    var rows = this.props.rows;
     var numRows = this.props.numRows;
     var numCols = this.props.numCols;
     var count = 0;
@@ -111,11 +113,11 @@ var GameBoard = React.createClass({
   },
 
   tick: function() {
-    var cells = this.state.rows.slice(0);
+    this.props.rows = this.state.rows.slice(0);
+    var cells = this.props.rows;
     for(i = 0; i < this.props.numRows; i++) {
       for (j = 0; j < this.props.numCols; j++) {
         var numLivingNeighbors = this.getNumLivingNeighbors(i, j);
-        console.debug(numLivingNeighbors);
         if (numLivingNeighbors < 2) {
           cells[i][j].living = false;
         } else if (numLivingNeighbors == 3) {
