@@ -148,10 +148,11 @@ var GameBoard = React.createClass({displayName: 'GameBoard',
   },
 
   setNumRowsAndCols: function() {
+    console.debug('tst');
     var width = window.innerWidth;
     this.props.numCols = Math.floor(width / this.props.cellSize);
     var height = window.innerHeight;
-    this.props.numRows = Math.floor(height / this.props.cellSize);
+    this.props.numRows = Math.floor(height / this.props.cellSize) - 1;
   },
 
   // Render
