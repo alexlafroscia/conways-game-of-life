@@ -1,6 +1,7 @@
 var gulp          = require('gulp');
 var react         = require('gulp-react');
 var gulpFilter    = require('gulp-filter');
+var sass          = require('gulp-sass');
 
 gulp.task('compile-dependencies', function() {
   return gulp.src([
@@ -23,4 +24,10 @@ gulp.task('compile-app-js', function () {
     .pipe(gulp.dest('.'));
 });
 
-gulp.task('default', ['compile-dependencies', 'compile-app-js']);
+gulp.task('sass', function() {
+  return gulp.src('src/styles.scss')
+         .pipe(sass())
+         .pipe(gulp.dest('.'));
+});
+
+gulp.task('default', ['compile-dependencies', 'compile-app-js', 'sass']);

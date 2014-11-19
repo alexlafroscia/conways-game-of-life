@@ -1,0 +1,25 @@
+html, body {
+  padding: 0;
+  margin: 0; }
+
+ul.grid {
+  width: 1600px;
+  padding: 0;
+  margin: 0; }
+  ul.grid > li {
+    display: block;
+    float: left;
+    clear: both;
+    overflow: hidden;
+    background-color: pink; }
+
+ul.row {
+  overflow: hidden;
+  padding: 0; }
+  ul.row > li {
+    display: inline-block;
+    box-sizing: border-box;
+    border: 15px solid pink;
+    background-color: red; }
+    ul.row > li.active {
+      background-color: blue; }
