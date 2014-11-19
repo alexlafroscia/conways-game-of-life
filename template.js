@@ -55,6 +55,7 @@ var GameBoard = React.createClass({displayName: 'GameBoard',
   },
 
   getInitialState: function() {
+    this.setNumRowsAndCols();
     var rows = [];
     var id = 0;
     for(i = 0; i < this.props.numRows; i++) {
@@ -132,12 +133,28 @@ var GameBoard = React.createClass({displayName: 'GameBoard',
 
   componentDidMount: function() {
     this.interval = setInterval(this.tick, 100);
+    window.addEventListener('resize', this.handleResize);
   },
 
   componentWillUnmount: function() {
     clearInterval(this.interval);
+    window.removeEventListener('resize', this.handleResize);
   },
 
+
+  // Handle Resize
+  handleResize: function() {
+    this.setNumRowsAndCols();
+  },
+
+  setNumRowsAndCols: function() {
+    var width = window.innerWidth;
+    this.props.numCols = Math.floor(width / this.props.cellSize);
+    var height = window.innerHeight;
+    this.props.numRows = Math.floor(height / this.props.cellSize);
+  },
+
+  // Render
   render: function() {
     var self = this;
     var rows = this.state.rows.map(function(row) {
